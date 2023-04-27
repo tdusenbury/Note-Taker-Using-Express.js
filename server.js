@@ -17,12 +17,12 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended:true }))
 
-//send notes to public/notes.html
+// route to notes.html page
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/notes.html'))
 });
 
-// route to/from the storage for the note through getNotes function on line 9
+// route to/from the db.json for the note info through getNotes function on line 9
 app.get('/api/notes', (req, res) => {
 
     const notes = getNotes();
@@ -32,7 +32,7 @@ app.get('/api/notes', (req, res) => {
     }
     );
 
-// creating a new note on the form as an object; then pushing it (line 52) to the existing array from db.json
+// creating a new note on the body form as an object; then pushing it (line 52) to the existing array from db.json
 app.post('/api/notes', (req, res) => {
     console.log(`${req.method} Request Received to Add a Note`);
     const { title, text} = req.body;
@@ -44,12 +44,14 @@ app.post('/api/notes', (req, res) => {
             id: uuidv4()
         }
     };
+// then pushing it (line 53) to the existing array from db.json
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
         } else {
             const notes = JSON.parse(data);
             notes.push(saveNote);
+
 // then update the db.json with new notes array
         fs.writeFile('./db/db.json', JSON.stringify(notes, null, 3),
             (err) =>
@@ -60,13 +62,13 @@ app.post('/api/notes', (req, res) => {
         }
     }
     );
-    res.redirect("back");
+    //res.redirect("back");
     }
 )
 app.delete('/api/notes/:id', (req, res) => {
     console.log(`${req.method} request received to DELETE NOTE!!!`);
     const noteIDFind = req.params.id;
-// find this note on the array in db.json and remove it
+// find this note on the array by the id parameter in db.json and  then remove it
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
@@ -77,7 +79,7 @@ app.delete('/api/notes/:id', (req, res) => {
                     Note.splice(x, 1)
                 }
             }
-  // then write the new db.json file without it   
+  // then rewrite the new db.json file without it   
         fs.writeFile('./db/db.json', JSON.stringify(Note, null, 3),
             (err) =>
             err
@@ -86,10 +88,10 @@ app.delete('/api/notes/:id', (req, res) => {
         );
     }
 });
-    res.redirect("back");
+    //res.redirect("back");
     }
 );
-// ROOT ROUTE '*' = wildcard route
+// ROOT ROUTE '*' = wildcard route to index.html file
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public/index.html'))
 })

@@ -1,4 +1,3 @@
-//DO NOT ADD TO THIS FILE
 let noteTitle;
 let noteText;
 let saveNoteBtn;
