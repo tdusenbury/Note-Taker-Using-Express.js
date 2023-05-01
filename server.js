@@ -68,25 +68,26 @@ app.post('/api/notes', (req, res) => {
 app.delete('/api/notes/:id', (req, res) => {
     console.log(`${req.method} request received to DELETE NOTE!!!`);
     const noteIDFind = req.params.id;
-// find this note on the array by the id parameter in db.json and  then remove it
+    // find this note on the array by the id parameter in db.json and  then remove it
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
         } else {
             const Note = JSON.parse(data);
-            for (x = 0; x < Note.length; x++) {
+            for (let x = 0; x < Note.length; x++) {
                 if(noteIDFind === Note[x].id) {
                     Note.splice(x, 1)
                 }
             }
-  // then rewrite the new db.json file without it   
-        fs.writeFile('./db/db.json', JSON.stringify(Note, null, 3),
-            (err) =>
-            err
-            ?console.error(err)
-            :console.log('This worked.')
-        );
-    }
+            console.log(Note)
+        // then rewrite the new db.json file without it   
+            fs.writeFile('./db/db.json', JSON.stringify(Note, null, 3),
+                (err) =>
+                err
+                ?console.error(err)
+                :console.log('This worked.')
+            );
+        }
 });
     res.redirect("/");
     }
